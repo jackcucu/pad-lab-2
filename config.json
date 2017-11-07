@@ -1,0 +1,74 @@
+{
+  "nodes": [
+    {
+      "name": "n1",
+      "ip": "127.0.0.1",
+      "bindPort": "1111",
+      "master": true,
+      "slaves": [
+        {
+          "name": "n3",
+          "ip": "127.0.0.1",
+          "bindPort": "1113",
+          "master": false
+        },
+        {
+          "name": "n4",
+          "ip": "127.0.0.1",
+          "bindPort": "1114",
+          "master": false
+        },
+        {
+          "name": "n5",
+          "ip": "127.0.0.1",
+          "bindPort": "1115",
+          "master": false
+        }
+      ]
+    },
+    {
+      "name": "n2",
+      "ip": "127.0.0.1",
+      "bindPort": "1112",
+      "master": true,
+      "slaves": [
+        {
+          "name": "n5",
+          "ip": "127.0.0.1",
+          "bindPort": "1115",
+          "master": false
+        },
+        {
+          "name": "n6",
+          "ip": "127.0.0.1",
+          "bindPort": "1116",
+          "master": false
+        }
+      ]
+    },
+    {
+      "name": "n3",
+      "ip": "127.0.0.1",
+      "bindPort": "1113",
+      "master": false
+    },
+    {
+      "name": "n4",
+      "ip": "127.0.0.1",
+      "bindPort": "1114",
+      "master": false
+    },
+    {
+      "name": "n5",
+      "ip": "127.0.0.1",
+      "bindPort": "1115",
+      "master": false
+    },
+    {
+      "name": "n6",
+      "ip": "127.0.0.1",
+      "bindPort": "1116",
+      "master": false
+    }
+  ]
+}
