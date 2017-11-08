@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class Configurations
 {
-    private List<Node> nodes;
+    private List<NodeConfig> nodeConfigs;
 }
