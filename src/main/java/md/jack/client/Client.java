@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import md.jack.dto.MavenDataWrapper;
 import md.jack.model.ContentType;
 import md.jack.model.Request;
+import md.jack.validators.ValidationUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -24,6 +25,9 @@ import java.io.StringReader;
 import java.net.Socket;
 import java.util.Scanner;
 
+import static java.nio.file.Files.lines;
+import static java.nio.file.Paths.get;
+import static java.util.stream.Collectors.joining;
 import static md.jack.model.ContentType.JSON;
 import static md.jack.model.ContentType.XML;
 import static md.jack.util.Constants.Server.BIND_PORT;
@@ -40,6 +44,7 @@ public class Client
         else
         {
             if (args[0].equalsIgnoreCase("xml") || args[0].equalsIgnoreCase("json"))
+            {
                 try
                 {
                     final Socket socket = new Socket("localhost", BIND_PORT);
@@ -83,6 +88,7 @@ public class Client
                 {
                     log.error("Error {} with cause {}", exception.getMessage(), exception.getCause());
                 }
+            }
         }
     }
 
@@ -117,6 +123,15 @@ public class Client
             }
             else
             {
+                if (ValidationUtils.isJsonValid(lines(get("json-schema.json")).collect(joining()), it))
+                {
+                    log.info("Valid json");
+                }
+                else
+                {
+                    log.error("Invalid json");
+                }
+
                 return gson.fromJson(it, MavenDataWrapper.class);
             }
         }

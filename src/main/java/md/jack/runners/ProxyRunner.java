@@ -77,7 +77,9 @@ public class ProxyRunner implements Runnable
                     }
                     else
                     {
-                        writer.println(gson.toJson(mavenDataWrapper));
+                        final String s = gson.toJson(mavenDataWrapper);
+                        System.out.println("sdfsfd");
+                        writer.println(s);
                     }
                 }
             }
