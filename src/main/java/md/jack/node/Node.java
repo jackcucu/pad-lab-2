@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import md.jack.config.Configurations;
 import md.jack.config.NodeConfig;
+import md.jack.dto.DataWrapper;
 import md.jack.runners.NodeRunner;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
+import static md.jack.util.Constants.Data.DATA;
 
 @Slf4j
 public class Node
@@ -30,20 +33,34 @@ public class Node
         else
         {
             final Gson gson = new Gson();
+
             final String json = Files.lines(Paths.get("config.json")).collect(Collectors.joining());
+
             final Configurations configurations = gson.fromJson(json, Configurations.class);
+
             final Optional<NodeConfig> first = configurations.getNodeConfigs()
                     .stream()
                     .filter(it -> it.getBindPort() == Integer.parseInt(args[0]))
                     .findFirst();
+
             final NodeConfig nodeConfig = first.orElseThrow(() -> new RuntimeException("Cannot find requested bind port in configuration"));
+
             final ServerSocket serverSocket = new ServerSocket(nodeConfig.getBindPort());
+
             log.info("NodeConfig server started on port {} waiting for requests...", nodeConfig.getBindPort());
 
             while (true)
             {
                 final Socket socket = serverSocket.accept();
-                executor.execute(new NodeRunner(socket, nodeConfig.isMaster(), nodeConfig.getSlaves()));
+
+                final NodeRunner nodeRunner = NodeRunner.builder()
+                        .maven(nodeConfig.isMaster())
+                        .slaves(nodeConfig.getSlaves())
+                        .socket(socket)
+                        .data(new DataWrapper(nodeConfig.getName(), DATA.get(nodeConfig.getName())))
+                        .build();
+
+                executor.execute(nodeRunner);
             }
         }
     }
