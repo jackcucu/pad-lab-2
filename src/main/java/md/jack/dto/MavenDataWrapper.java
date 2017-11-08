@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
@@ -14,6 +13,5 @@ import java.util.List;
 @XmlRootElement
 public class MavenDataWrapper
 {
-    @XmlElement()
-    private List<DataWrapper> data;
+    private List<DataWrapper> dates;
 }
