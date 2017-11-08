@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import md.jack.config.Configurations;
 import md.jack.config.NodeConfig;
-import md.jack.runners.ClientRunner;
+import md.jack.runners.ProxyRunner;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -47,7 +47,7 @@ public class ProxyServer
         {
             final Socket socket = serverSocket.accept();
 
-            executor.execute(new ClientRunner(socket, mavens));
+            executor.execute(new ProxyRunner(socket, mavens));
         }
     }
 
