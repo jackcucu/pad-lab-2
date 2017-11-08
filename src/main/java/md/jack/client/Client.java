@@ -1,6 +1,8 @@
 package md.jack.client;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import md.jack.dto.MavenDataWrapper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -27,13 +29,20 @@ public class Client
 
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+                final Gson gson = new Gson();
+
                 while (true)
                 {
                     System.out.println("Query : ");
                     final Scanner scanner = new Scanner(System.in);
                     writer.println(scanner.nextLine());
 
-                    reader.lines().findFirst().ifPresent(System.out::println);
+                    final MavenDataWrapper mavenDataWrapper = reader.lines()
+                            .findFirst()
+                            .map(it -> gson.fromJson(it, MavenDataWrapper.class))
+                            .orElseGet(() -> null);
+
+                    System.out.println(mavenDataWrapper);
                 }
             }
         }
