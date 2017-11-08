@@ -5,19 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import md.jack.config.NodeConfig;
 import md.jack.dto.DataWrapper;
 import md.jack.dto.MavenDataWrapper;
+import md.jack.model.Request;
+import md.jack.util.NodeUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Socket;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static md.jack.model.ContentType.XML;
 
 @Slf4j
 public class ProxyRunner implements Runnable
@@ -32,24 +34,6 @@ public class ProxyRunner implements Runnable
         this.mavens = mavens;
     }
 
-    private static String get(NodeConfig it)
-    {
-        try
-        {
-            final Socket socket = new Socket(it.getIp(), it.getBindPort());
-            final BufferedReader r = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            while (true)
-            {
-                return r.lines().findFirst().orElse("nothing");
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     @Override
     public void run()
     {
@@ -62,29 +46,39 @@ public class ProxyRunner implements Runnable
             final PrintWriter writer = new PrintWriter(new OutputStreamWriter(this.socket.getOutputStream()), true);
 
             final Gson gson = new Gson();
+
             String message;
 
             final Marshaller jaxbMarshaller = JAXBContext.newInstance(
                     MavenDataWrapper.class)
                     .createMarshaller();
 
-            // output pretty printed
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
             while (true)
             {
                 while ((message = reader.readLine()) != null)
                 {
+                    final Request request = gson.fromJson(message, Request.class);
+
                     final List<DataWrapper> collect = mavens.stream()
-                            .map(ProxyRunner::get)
+                            .map(NodeUtils::get)
                             .map(it -> gson.fromJson(it, DataWrapper.class))
                             .collect(toList());
 
                     final MavenDataWrapper mavenDataWrapper = new MavenDataWrapper(collect);
 
+                    if (request.getContentType().equals(XML))
+                    {
+                        final StringWriter stringWriter = new StringWriter();
 
-                    jaxbMarshaller.marshal(mavenDataWrapper, new File("output.xml"));
-                    writer.println(gson.toJson(mavenDataWrapper));
+                        jaxbMarshaller.marshal(mavenDataWrapper, stringWriter);
+
+
+                        writer.println(stringWriter.toString());
+                    }
+                    else
+                    {
+                        writer.println(gson.toJson(mavenDataWrapper));
+                    }
                 }
             }
         }

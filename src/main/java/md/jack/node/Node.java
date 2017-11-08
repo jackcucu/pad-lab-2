@@ -28,7 +28,7 @@ public class Node
 
         if (args.length < 1)
         {
-            System.out.println("Enter node port as arg");
+            log.error("Enter node port as arg");
         }
         else
         {

@@ -3,13 +3,13 @@ package md.jack.runners;
 import com.google.gson.Gson;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import md.jack.config.NodeConfig;
 import md.jack.dto.DataDto;
 import md.jack.dto.DataWrapper;
+import md.jack.util.NodeUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Collection;
@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 
 @Data
 @Builder
+@Slf4j
 public class NodeRunner implements Runnable
 {
     private Socket socket;
@@ -29,24 +30,6 @@ public class NodeRunner implements Runnable
     private List<NodeConfig> slaves;
 
     private DataWrapper data;
-
-    private static String get(final NodeConfig it)
-    {
-        try
-        {
-            final Socket socket1 = new Socket(it.getIp(), it.getBindPort());
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(socket1.getInputStream()));
-            while (true)
-            {
-                return reader.lines().findFirst().orElse("nothing");
-            }
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-            return "";
-        }
-    }
 
     @Override
     public void run()
@@ -60,11 +43,11 @@ public class NodeRunner implements Runnable
             if (maven)
             {
                 final Stream<DataWrapper> dataWrapperStream = slaves.stream()
-                        .map(NodeRunner::get)
+                        .map(NodeUtils::get)
                         .map(it -> gson.fromJson(it, DataWrapper.class));
 
                 final List<DataDto> finalData = Stream.concat(dataWrapperStream, Stream.of(data))
-                        .map(DataWrapper::getDataDtos)
+                        .map(DataWrapper::getData)
                         .flatMap(Collection::stream)
                         .collect(toList());
 
