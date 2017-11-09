@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="mavenDataWrapper" type="mavenDataWrapperType"/>
+  <xs:complexType name="mavenDataWrapperType">
+    <xs:sequence>
+      <xs:element type="datesType" name="dates" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="dataType">
+    <xs:sequence>
+      <xs:element type="xs:integer" name="id"/>
+      <xs:element type="xs:string" name="text"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="datesType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="nodeName"/>
+      <xs:element type="dataType" name="data" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

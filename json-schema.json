@@ -1,0 +1,58 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "$id": "http://example.com/example.json",
+  "properties": {
+    "dates": {
+      "type": "array",
+      "$id": "/properties/dates",
+      "items": {
+        "type": "object",
+        "$id": "/properties/dates/items",
+        "properties": {
+          "nodeName": {
+            "type": "string",
+            "$id": "/properties/dates/items/properties/nodeName",
+            "title": "The Nodename Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "n1"
+            ]
+          },
+          "data": {
+            "type": "array",
+            "$id": "/properties/dates/items/properties/data",
+            "items": {
+              "type": "object",
+              "$id": "/properties/dates/items/properties/data/items",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "$id": "/properties/dates/items/properties/data/items/properties/id",
+                  "title": "The Id Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    11
+                  ]
+                },
+                "text": {
+                  "type": "string",
+                  "$id": "/properties/dates/items/properties/data/items/properties/text",
+                  "title": "The Text Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "[INFO] operation 11 success"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
