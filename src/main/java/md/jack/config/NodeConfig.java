@@ -15,5 +15,5 @@ public @Builder @Data class NodeConfig
 
     private boolean master;
 
-    private List<NodeConfig> slaves;
+    private List<String> slaves;
 }

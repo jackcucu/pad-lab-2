@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -43,9 +44,15 @@ public class Node
                     .filter(it -> it.getBindPort() == Integer.parseInt(args[0]))
                     .findFirst();
 
-            final NodeConfig nodeConfig = first.orElseThrow(() -> new RuntimeException("Cannot find requested bind port in configuration"));
+            final NodeConfig nodeConfig = first.orElseThrow(() ->
+                    new RuntimeException("Cannot find requested bind port in configuration"));
 
             final ServerSocket serverSocket = new ServerSocket(nodeConfig.getBindPort());
+
+            final List<NodeConfig> slaves = configurations.getNodeConfigs()
+                    .stream()
+                    .filter(it -> nodeConfig.getSlaves().stream().anyMatch(sl -> it.getName().equalsIgnoreCase(sl)))
+                    .collect(Collectors.toList());
 
             log.info("NodeConfig server started on port {} waiting for requests...", nodeConfig.getBindPort());
 
@@ -55,7 +62,7 @@ public class Node
 
                 final NodeRunner nodeRunner = NodeRunner.builder()
                         .maven(nodeConfig.isMaster())
-                        .slaves(nodeConfig.getSlaves())
+                        .slaves(slaves)
                         .socket(socket)
                         .data(new DataWrapper(nodeConfig.getName(), DATA.get(nodeConfig.getName())))
                         .build();
