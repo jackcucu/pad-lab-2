@@ -60,6 +60,7 @@ public class Node
             while (true)
             {
                 final Socket socket = serverSocket.accept();
+                log.info("Received connection from {} on port {}", socket.getInetAddress(), socket.getPort());
 
                 final NodeRunner nodeRunner = NodeRunner.builder()
                         .maven(nodeConfig.isMaster())
