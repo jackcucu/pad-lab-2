@@ -3,9 +3,9 @@
 
 The implementation of proxy is presented here. Working language is **Java**. 
 This project has 3 components:
--proxy
--client
--node
+* proxy
+* client
+* node
 
 See [protocol-specs](https://github.com/jackcucu/pad-lab-2/blob/master/docs/protocol-specs.md) for more info about client-broker communication.
 
@@ -14,9 +14,9 @@ See [protocol-specs](https://github.com/jackcucu/pad-lab-2/blob/master/docs/prot
 In order to build you should have installed java 8 and maven.
 
 In terminal type `mvn clean package` that will produce in `target/` folder 3 jars :
--proxy (`target/proxy-jar-with-dependencies.jar`)
--node (`target/node-jar-with-dependencies.jar`)
--client (`target/client-jar-with-dependencies.jar`)
+* proxy (`target/proxy-jar-with-dependencies.jar`)
+* node (`target/node-jar-with-dependencies.jar`)
+* client (`target/client-jar-with-dependencies.jar`)
 
 ### Run
 

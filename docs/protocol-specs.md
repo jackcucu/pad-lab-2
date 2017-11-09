@@ -2,13 +2,11 @@
 
 The protocol for the system `proxy` is based on JSON.
 
-`brk` automatically creates new queue on publisher request and based on field transporting_type makes queue persistent or not.
-
 `query` is a dsl query for data. It must be compose of the following:
 
-**Operations** : SORT(-field, field2) "-" is desc , FILTER(field:operator:value, field2:operator:value)
-**Fields** : id, text
-**Operators** : eq(equals), gt(>), lt(<), contains(if string contains in data)
+* **Operations** : SORT(-field, field2) "-" is desc , FILTER(field:operator:value, field2:operator:value)
+* **Fields** : id, text
+* **Operators** : eq(equals), gt(>), lt(<), contains(if string contains in data)
 
 Examples :
 ```
