@@ -2,8 +2,10 @@
 
 
 The implementation of proxy is presented here. Working language is **Java**. 
-This project has 1 module:
--proxy-module(`src/`);
+This project has 3 components:
+-proxy
+-client
+-node
 
 See [protocol-specs](https://github.com/jackcucu/pad-lab-2/blob/master/docs/protocol-specs.md) for more info about client-broker communication.
 
