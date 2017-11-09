@@ -51,6 +51,7 @@ public class Node
 
             final List<NodeConfig> slaves = configurations.getNodeConfigs()
                     .stream()
+                    .filter(it -> nodeConfig.getSlaves() != null)
                     .filter(it -> nodeConfig.getSlaves().stream().anyMatch(sl -> it.getName().equalsIgnoreCase(sl)))
                     .collect(Collectors.toList());
 

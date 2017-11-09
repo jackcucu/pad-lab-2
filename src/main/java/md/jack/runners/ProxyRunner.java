@@ -6,6 +6,7 @@ import md.jack.config.NodeConfig;
 import md.jack.dto.DataWrapper;
 import md.jack.dto.MavenDataWrapper;
 import md.jack.model.Request;
+import md.jack.resolver.QueryResolver;
 import md.jack.util.NodeUtils;
 
 import javax.xml.bind.JAXBContext;
@@ -59,9 +60,12 @@ public class ProxyRunner implements Runnable
                 {
                     final Request request = gson.fromJson(message, Request.class);
 
+                    final QueryResolver queryResolver = new QueryResolver();
+
                     final List<DataWrapper> collect = mavens.stream()
                             .map(NodeUtils::get)
                             .map(it -> gson.fromJson(it, DataWrapper.class))
+                            .peek(it -> it.setData(queryResolver.resolve(request.getQuery(), it.getData())))
                             .collect(toList());
 
                     final MavenDataWrapper mavenDataWrapper = new MavenDataWrapper(collect);

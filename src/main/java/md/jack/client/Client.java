@@ -67,6 +67,7 @@ public class Client
 
                         request.setContentType(args[0].equalsIgnoreCase("xml") ? XML : JSON);
 
+                        System.out.println("Usage SORT(field1, -field2)\"-{desc}\" FILTER(field:operator:value) \"operator:gt, lt, eq, contains");
                         while (true)
                         {
                             System.out.println("Query : ");
@@ -80,7 +81,12 @@ public class Client
                                     .map(it -> unmarshall(unmarshaller, gson, request.getContentType(), it))
                                     .orElse(null);
 
-                            System.out.println(mavenDataWrapper);
+                            mavenDataWrapper.getDates().forEach(it -> {
+                                System.out.println("Node name : " + it.getNodeName());
+                                it.getData().forEach(o -> {
+                                    System.out.println("    " + o.getId() + " " + o.getText());
+                                });
+                            });
                         }
                     }
                 }

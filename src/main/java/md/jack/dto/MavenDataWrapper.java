@@ -14,4 +14,5 @@ import java.util.List;
 public class MavenDataWrapper
 {
     private List<DataWrapper> dates;
+
 }
