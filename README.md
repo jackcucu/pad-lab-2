@@ -18,6 +18,7 @@ In terminal type `mvn clean package` that will produce in `target/` folder 3 jar
 * node (`target/node-jar-with-dependencies.jar`)
 * client (`target/client-jar-with-dependencies.jar`)
 
+
 ### Run
 
 You can run the following jars:
