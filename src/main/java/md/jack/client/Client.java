@@ -2,7 +2,7 @@ package md.jack.client;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import md.jack.dto.MavenDataWrapper;
+import md.jack.dto.DataWrapper;
 import md.jack.model.ContentType;
 import md.jack.model.Request;
 import md.jack.validators.ValidationUtils;
@@ -76,16 +76,13 @@ public class Client
 
                             writer.println(gson.toJson(request));
 
-                            final MavenDataWrapper mavenDataWrapper = reader.lines()
+                            final DataWrapper dataWrapper = reader.lines()
                                     .findFirst()
                                     .map(it -> unmarshall(unmarshaller, gson, request.getContentType(), it))
                                     .orElse(null);
 
-                            mavenDataWrapper.getDates().forEach(it -> {
-                                System.out.println("Node name : " + it.getNodeName());
-                                it.getData().forEach(o -> {
-                                    System.out.println("    " + o.getId() + " " + o.getText());
-                                });
+                            dataWrapper.getData().forEach(it -> {
+                                System.out.println(it.getId() + " " + it.getText());
                             });
                         }
                     }
@@ -100,7 +97,7 @@ public class Client
 
     private static Unmarshaller getUnmarshaller() throws JAXBException, SAXException
     {
-        final JAXBContext context = JAXBContext.newInstance(MavenDataWrapper.class);
+        final JAXBContext context = JAXBContext.newInstance(DataWrapper.class);
 
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         final Schema schema = sf.newSchema(new File("xml_schema.xsd"));
@@ -113,19 +110,20 @@ public class Client
         return unmarshaller;
     }
 
-    private static MavenDataWrapper unmarshall(final Unmarshaller unmarshaller,
-                                               final Gson gson,
-                                               final ContentType contentType,
-                                               final String it)
+    private static DataWrapper unmarshall(final Unmarshaller unmarshaller,
+                                          final Gson gson,
+                                          final ContentType contentType,
+                                          final String it)
     {
         try
         {
+            log.info(it);
             if (contentType.equals(XML))
             {
                 final XMLStreamReader xmlStreamReader = XMLInputFactory.newInstance()
                         .createXMLStreamReader(new StringReader(it));
 
-                return (MavenDataWrapper) unmarshaller.unmarshal(xmlStreamReader);
+                return (DataWrapper) unmarshaller.unmarshal(xmlStreamReader);
             }
             else
             {
@@ -138,7 +136,7 @@ public class Client
                     log.error("Invalid json");
                 }
 
-                return gson.fromJson(it, MavenDataWrapper.class);
+                return gson.fromJson(it, DataWrapper.class);
             }
         }
         catch (Exception exception)

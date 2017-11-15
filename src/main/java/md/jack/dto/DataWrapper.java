@@ -14,7 +14,5 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DataWrapper
 {
-    private String nodeName;
-
     private List<DataDto> data;
 }

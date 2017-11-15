@@ -66,7 +66,7 @@ public class Node
                         .maven(nodeConfig.isMaster())
                         .slaves(slaves)
                         .socket(socket)
-                        .data(new DataWrapper(nodeConfig.getName(), DATA.get(nodeConfig.getName())))
+                        .data(new DataWrapper(DATA.get(nodeConfig.getName())))
                         .build();
 
                 executor.execute(nodeRunner);

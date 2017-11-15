@@ -3,11 +3,10 @@ package md.jack.runners;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import md.jack.config.NodeConfig;
+import md.jack.dto.DataDto;
 import md.jack.dto.DataWrapper;
-import md.jack.dto.MavenDataWrapper;
 import md.jack.model.Request;
 import md.jack.resolver.QueryResolver;
-import md.jack.util.NodeUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -17,10 +16,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Socket;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static md.jack.model.ContentType.XML;
+import static md.jack.util.NodeUtils.get;
 
 @Slf4j
 public class ProxyRunner implements Runnable
@@ -51,7 +52,7 @@ public class ProxyRunner implements Runnable
             String message;
 
             final Marshaller jaxbMarshaller = JAXBContext.newInstance(
-                    MavenDataWrapper.class)
+                    DataWrapper.class)
                     .createMarshaller();
 
             while (true)
@@ -60,29 +61,31 @@ public class ProxyRunner implements Runnable
                 {
                     final Request request = gson.fromJson(message, Request.class);
 
-                    final QueryResolver queryResolver = new QueryResolver();
+                    final QueryResolver queryResolver = new QueryResolver(request.getQuery());
 
-                    final List<DataWrapper> collect = mavens.stream()
-                            .map(NodeUtils::get)
+                    final List<DataDto> data = mavens.stream()
+                            .map(it -> get(it, request))
                             .map(it -> gson.fromJson(it, DataWrapper.class))
-                            .peek(it -> it.setData(queryResolver.resolve(request.getQuery(), it.getData())))
+                            .map(DataWrapper::getData)
+                            .flatMap(Collection::stream)
                             .collect(toList());
 
-                    final MavenDataWrapper mavenDataWrapper = new MavenDataWrapper(collect);
+                    queryResolver.sort(data);
+
+                    final DataWrapper dataWrapper = new DataWrapper(data);
 
                     if (request.getContentType().equals(XML))
                     {
                         final StringWriter stringWriter = new StringWriter();
 
-                        jaxbMarshaller.marshal(mavenDataWrapper, stringWriter);
+                        jaxbMarshaller.marshal(dataWrapper, stringWriter);
 
 
                         writer.println(stringWriter.toString());
                     }
                     else
                     {
-                        final String s = gson.toJson(mavenDataWrapper);
-                        System.out.println("sdfsfd");
+                        final String s = gson.toJson(dataWrapper);
                         writer.println(s);
                     }
                 }

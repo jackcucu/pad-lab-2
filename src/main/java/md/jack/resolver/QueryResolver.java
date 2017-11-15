@@ -12,12 +12,18 @@ import static java.util.stream.Collectors.toList;
 
 public class QueryResolver
 {
-    public List<DataDto> resolve(final String query, List<DataDto> data)
+    private List<String> queryList;
+
+    public QueryResolver(final String query)
     {
-        final List<String> queryList = Stream.of(query.split(" "))
+        this.queryList = Stream.of(query.split(" "))
                 .map(String::trim)
                 .collect(toList());
+    }
 
+
+    public List<DataDto> filter(List<DataDto> data)
+    {
         final List<String> filter = queryList.stream()
                 .filter(it -> it.contains("FILTER"))
                 .map(it -> it.replace("FILTER(", ""))
@@ -26,15 +32,6 @@ public class QueryResolver
                 .flatMap(Arrays::stream)
                 .collect(toList());
 
-        data = filter(data, filter);
-
-        sort(data, queryList);
-
-        return data;
-    }
-
-    private List<DataDto> filter(List<DataDto> data, final List<String> filter)
-    {
         for (String it : filter)
         {
             final String[] split = it.split(":");
@@ -83,7 +80,7 @@ public class QueryResolver
         return data;
     }
 
-    private void sort(final List<DataDto> data, final List<String> queryList)
+    public void sort(final List<DataDto> data)
     {
         final List<String> sort = queryList.stream()
                 .filter(it -> it.contains("SORT"))
