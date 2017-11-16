@@ -33,7 +33,7 @@ Verify if **BIND_PORT**(`see constants below`) is not already in use then
 
 Program is running if port that user indicates as arg0 contains in config file [from](https://github.com/jackcucu/pad-lab-2/blob/master/config.json) here, run jar with arguments:
 arg0 : 
-- port
+- portf
 Verify if **port** is not already in use then
 
 `cd` in `target` folder and type `java -jar node-jar-with-dependencies.jar`
