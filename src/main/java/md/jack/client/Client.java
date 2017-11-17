@@ -103,7 +103,7 @@ public class Client
         final JAXBContext context = JAXBContext.newInstance(MavenDataWrapper.class);
 
         final SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        final Schema schema = sf.newSchema(new File("xml_schema.xsd"));
+        final Schema schema = sf.newSchema(new File("xml-schema.xsd"));
 
         final Unmarshaller unmarshaller = context.createUnmarshaller();
 
