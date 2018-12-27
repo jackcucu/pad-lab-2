@@ -56,3 +56,6 @@ These constants are used in project:
 - HOST = "127.0.0.1" *(host ip for clients)*
 
 
+
+
+
